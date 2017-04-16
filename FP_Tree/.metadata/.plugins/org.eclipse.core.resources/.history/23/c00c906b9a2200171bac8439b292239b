@@ -1,0 +1,23 @@
+package tree_fp;
+
+public class DataRef {
+/**
+ * Number of times pregnant
+   2. Plasma glucose concentration a 2 hours in an oral glucose tolerance test
+   3. Diastolic blood pressure (mm Hg)
+   4. Triceps skin fold thickness (mm)
+   5. 2-Hour serum insulin (mu U/ml)
+   6. Body mass index (weight in kg/(height in m)^2)
+   7. Diabetes pedigree function
+   8. Age (years)
+   9. Class variable (0 or 1)
+ */
+	public String[] classes;
+	DataRef() {
+		classes[0] = "Number of times pregnant";
+		classes[1] = "Plasma glucose concentration a 2 hours in an oral glucose tolerance test";
+		classes[2] = "Diastolic blood pressure (mm Hg)";
+		classes[3] = "Triceps skin fold thickness (mm)";
+		classes[4] = "2-Hour serum insulin (mu U/ml)";
+	}
+}
