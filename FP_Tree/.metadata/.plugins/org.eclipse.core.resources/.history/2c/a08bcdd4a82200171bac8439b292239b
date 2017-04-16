@@ -1,0 +1,44 @@
+package tree_fp;
+
+import java.io.*;
+import java.util.*;
+
+
+public class PreProcessing {
+	public ArrayList<int []> data = new ArrayList<int[]>();
+	public PreProcessing(String filename) {
+		try{
+			inputHandle(filename,data);
+		}catch(Exception e){
+			System.out.println("\nError In file Reading " + e);
+		}
+	}
+
+	/**
+	 * @param filename : the filename to be opened
+	 * @param data : The ArrayList of data objects which is to be populated on the basis of data
+	 * @throws IOException : To handle File not found error.
+	 * @see IOException
+	 */
+	public void inputHandle(String filename,ArrayList<int[]> data)throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader(filename));
+		String line=null;
+		while((line=br.readLine()) != null) {
+			StringTokenizer st = new StringTokenizer(line,",");
+			int row[] = new int[9];
+			while(st.hasMoreTokens()){
+				row[0] = discPregnancy(Integer.parseInt(st.nextToken()));
+				row[1] = discPlasma(Integer.parseInt(st.nextToken()));
+				row[2] = handleBP(Integer.parseInt(st.nextToken()));
+				row[3] = discSkinFold(Integer.parseInt(st.nextToken()));
+				row[4] = discSerum(st.nextToken());
+				row[5] = discBMI(st.nextToken());
+				row[6] = discPedigree(st.nextToken());
+				row[7] = discAge(st.nextToken());
+				row[8] = Integer.parseInt(st.nextToken());
+			}
+			System.out.println();
+		}       
+		br.close();
+	}
+}

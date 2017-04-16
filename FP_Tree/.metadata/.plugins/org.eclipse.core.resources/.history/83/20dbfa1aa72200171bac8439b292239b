@@ -1,0 +1,16 @@
+package tree_fp;
+
+public class PreProcessing {
+
+	private void ArrayLis() {
+		// TODO Auto-generated method stub
+
+	}
+	public PreProcessing(String filename) {
+		try{
+			inputHandle(filename,data);
+		}catch(Exception e){
+			System.out.println("\nError In file Reading " + e);
+}
+	}
+}

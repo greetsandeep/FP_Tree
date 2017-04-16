@@ -1,0 +1,13 @@
+package tree_fp;
+
+import java.util.*;
+public class PreProcessing {
+	public static ArrayList<int []> data = new ArrayList<int[]>();
+	public PreProcessing(String filename) {
+		try{
+			inputHandle(filename,data);
+		}catch(Exception e){
+			System.out.println("\nError In file Reading " + e);
+}
+	}
+}

@@ -1,0 +1,14 @@
+package tree_fp;
+
+import java.util.*;
+public class PreProcessing {
+
+	ArrayLis
+	public PreProcessing(String filename) {
+		try{
+			inputHandle(filename,data);
+		}catch(Exception e){
+			System.out.println("\nError In file Reading " + e);
+}
+	}
+}

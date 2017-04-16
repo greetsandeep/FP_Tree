@@ -1,0 +1,12 @@
+package tree_fp;
+
+public class PreProcessing {
+
+	public PreProcessing(String filename) {
+		try{
+			inputHandle(filename,data);
+		}catch(Exception e){
+			System.out.println("\nError In file Reading " + e);
+}
+	}
+}
