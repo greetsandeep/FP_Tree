@@ -93,11 +93,6 @@ public class PreProcessing {
 		DataRef.subclasses.put(1,categories);
 	}
 	
-	/**
-	 * @param plasma Takes in an ArrayList of Plasma Glucose Conc. and classifies into sub categories as mentioned.
-	 * The Classification Principle is Equal Frequency Classes
-	 * The function feeds -1 in case of missing values which in this data set have been represented by 0
-	 */
 	public void discPlasma(ArrayList<Integer> plasma){
 		for(int i=0;i<plasma.size();i++)
 		{
@@ -143,7 +138,7 @@ public class PreProcessing {
 
 
 	public void discSkinFold(ArrayList<Integer> skinFold){
-		
+
 	}
 	public void discSerum(ArrayList<Integer> serum){
 

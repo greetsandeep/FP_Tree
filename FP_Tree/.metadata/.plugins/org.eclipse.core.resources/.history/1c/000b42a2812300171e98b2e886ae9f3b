@@ -143,7 +143,7 @@ public class PreProcessing {
 
 
 	public void discSkinFold(ArrayList<Integer> skinFold){
-		
+
 	}
 	public void discSerum(ArrayList<Integer> serum){
 
