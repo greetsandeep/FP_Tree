@@ -3,8 +3,8 @@ package tree_fp;
 import java.util.HashMap;
 
 public class DataRef {
-	public String[] classes;
-	public HashMap<Integer, String[]> subclasses = new HashMap<Integer,String[]>();
+	public static String[] classes;
+	public static HashMap<Integer, String[]> subclasses = new HashMap<Integer,String[]>();
 	DataRef() {
 		classes[0] = "Number of times pregnant";
 		classes[1] = "Plasma glucose concentration a 2 hours in an oral glucose tolerance test";
