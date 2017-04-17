@@ -3,6 +3,8 @@ package tree_fp;
 import java.io.*;
 import java.util.*;
 
+import org.omg.PortableInterceptor.INACTIVE;
+
 
 
 public class PreProcessing {
@@ -55,7 +57,16 @@ public class PreProcessing {
 		discBMI(bmi);
 		discPedigree(pedigree);
 		discAge(age);
-
+		
+		handleMissing(age);
+		handleMissing(serum);
+		handleMissing(skinFold);
+		handleMissing(blood_pressure);
+		handleMissing(plasma);
+		handleMissing(pregnancy);
+		
+		handleMissingDouble(pedigree);
+		handleMissingDouble(bmi);
 		br.close();
 	}
 	public void discPregnancy(ArrayList<Integer> pregnancy){
@@ -157,5 +168,58 @@ public class PreProcessing {
 			temp[i-1] = temp1;
 		}
 		DataRef.subclasses.put(8,temp);
+	}
+
+	/**
+	 * @param list The list which contains Missing Values
+	 * Fills the missing values with the class which occurs the most.
+	 */
+	public void handleMissing(ArrayList<Integer> list){
+		TreeSet<Integer> unique = new TreeSet<Integer>();
+		for(int i=0;i<list.size();i++)
+			unique.add(list.get(i));
+		
+		HashMap<Integer, Integer> freqTable = new HashMap<Integer,Integer>();
+		
+		for(Integer temp : unique){
+			freqTable.put(temp, freqTable.get(temp)+1);
+		}
+		int max = 0;
+		for(Integer temp : unique){
+			if(freqTable.get(temp)>max)
+				max = temp;
+		}
+		
+		for(int i=0;i<list.size();i++)
+		{
+			if(list.get(i)==-1)
+				list.set(i,max);
+		}
+	}
+	/**
+	 * @param list The list which contains Missing Values
+	 * Fills the missing values with the class which occurs the most.
+	 */
+	public void handleMissingDouble(ArrayList<Double> list){
+		TreeSet<Double> unique = new TreeSet<Double>();
+		for(int i=0;i<list.size();i++)
+			unique.add(list.get(i));
+		
+		HashMap<Double, Integer> freqTable = new HashMap<Double,Integer>();
+		
+		for(Double temp : unique){
+			freqTable.put(temp, freqTable.get(temp)+1);
+		}
+		double max = 0;
+		for(Double temp : unique){
+			if(freqTable.get(temp)>max)
+				max = temp;
+		}
+		
+		for(int i=0;i<list.size();i++)
+		{
+			if(list.get(i)==-1.0)
+				list.set(i,max);
+		}
 	}
 }
