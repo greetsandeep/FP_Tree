@@ -12,6 +12,8 @@ public class PreProcessing {
 		}catch(Exception e){
 			System.out.println("\nError In file Reading " + e);
 		}
+
+		expand(data,expandedData);
 	}
 
 	public void inputHandle(String filename,ArrayList<int[]> data)throws IOException {
@@ -54,20 +56,21 @@ public class PreProcessing {
 		discBMI(bmi);
 		discPedigree(pedigree);
 		discAge(age);
-			
+
 		handleMissing(age);
 		handleMissing(serum);
 		handleMissing(skinFold);
 		handleMissing(blood_pressure);
 		handleMissing(plasma);
 		handleMissing(pregnancy);
-		
+
 		handleMissingDouble(pedigree);
 		handleMissingDouble(bmi);
 
-		int row[] = new int[9];
+
 		for(int i=0;i<pregnancy.size();i++)
 		{
+			int row[] = new int[9];
 			row[0] = pregnancy.get(i);
 			row[1] = plasma.get(i);
 			row[2] = blood_pressure.get(i);
@@ -105,7 +108,7 @@ public class PreProcessing {
 		String categories[] = {"0","1","2",">=3 and <=4",">=5 and <=7",">7"};
 		DataRef.subclasses.put(1,categories);
 	}
-	
+
 	/**
 	 * @param plasma Takes in an ArrayList of Plasma Glucose Conc. and classifies into sub categories as mentioned.
 	 * The Classification Principle is Equal Frequency Classes
@@ -160,7 +163,7 @@ public class PreProcessing {
 	 * The function feeds -1 in case of missing values which in this data set have been represented by 0
 	 */
 	public void discSkinFold(ArrayList<Integer> skinFold){
-		
+
 		for(int i=0;i<skinFold.size();i++)
 		{
 			if(skinFold.get(i)==0)
@@ -250,7 +253,10 @@ public class PreProcessing {
 				for(int j=1;j<6;j++)
 				{
 					if(pedigree.get(i)<= min+(j*width))
+					{
 						pedigree.set(i,(double)j);
+						break;
+					}
 				}
 			}
 		}
@@ -262,7 +268,7 @@ public class PreProcessing {
 		}
 		DataRef.subclasses.put(8,temp);
 	}
-	
+
 	/**
 	 * @param age Takes in an ArrayList of Ages and classifies into sub categories as mentioned.
 	 * This discretisation function uses the equal width stratergy to classify data
@@ -286,7 +292,10 @@ public class PreProcessing {
 				for(int j=1;j<6;j++)
 				{
 					if(age.get(i)<= min+(j*width))
+					{
 						age.set(i,j);
+						break;
+					}
 				}
 			}
 		}
@@ -309,21 +318,21 @@ public class PreProcessing {
 			unique.add(list.get(i));
 
 		HashMap<Integer, Integer> freqTable = new HashMap<Integer,Integer>();
-	
+
 		for(Integer temp : unique){
 			freqTable.put(temp,0);
 		}
-		
+
 		for(Integer temp : list){
 			freqTable.put(temp, freqTable.get(temp)+1);
 		}
-		
+
 		int max = 0;
 		for(Integer temp : unique){
 			if(freqTable.get(temp)>max)
 				max = temp;
 		}
-		
+
 		for(int i=0;i<list.size();i++)
 		{
 			if(list.get(i)==-1)
@@ -338,32 +347,64 @@ public class PreProcessing {
 		TreeSet<Double> unique = new TreeSet<Double>();
 		for(int i=0;i<list.size();i++)
 			unique.add(list.get(i));
-		
+
 		HashMap<Double, Integer> freqTable = new HashMap<Double,Integer>();
-		
+
 		for(Double temp : unique){
 			freqTable.put(temp,0);
 		}
-		
+
 		for(Double temp : unique){
 			freqTable.put(temp, freqTable.get(temp)+1);
 		}
-		
+
 		double max = 0;
 		for(Double temp : unique){
 			if(freqTable.get(temp)>max)
 				max = temp;
 		}
-		
+
 		for(int i=0;i<list.size();i++)
 		{
 			if(list.get(i)==-1.0)
 				list.set(i,max);
 		}
 	}
-	
+
+
+	/**
+	 * @param row the row which we want to print
+	 * An utility function that prints the passed array
+	 */
+	public static void printArray(int []row){
+		for(int i=0;i<row.length;i++)
+			System.out.print(row[i]+" ");
+		System.out.println();
+	}
+	public static void printArray(double []row){
+		for(int i=0;i<row.length;i++)
+			System.out.print(row[i]+" ");
+		System.out.println();
+	}
+
+	/**
+	 * @param data The data to be handled
+	 * @param expandedData The representation of data considering each category to be a product
+	 */
 	public static void expand(ArrayList<int []> data, ArrayList<int []> expandedData){
 		for(int i=0;i<data.size();i++)
-			System.out.println(data.get(i));
+		{
+			int row[] = new int[9];
+			row[0] = data.get(i)[0];
+			row[1] = data.get(i)[1]+6;
+			row[2] = data.get(i)[2]+11;
+			row[3] = data.get(i)[3]+15;
+			row[4] = data.get(i)[4]+20;
+			row[5] = data.get(i)[5]+25;
+			row[6] = data.get(i)[6]+30;
+			row[7] = data.get(i)[7]+33;
+			row[8] = data.get(i)[8]+38;
+			expandedData.add(i,row);
+		}
 	}
 }

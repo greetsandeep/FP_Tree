@@ -6,6 +6,7 @@ import java.util.*;
 public class PreProcessing {
 	public ArrayList<int []> data = new ArrayList<int[]>();
 	public ArrayList<int []> expandedData = new ArrayList<int[]>();
+	public int support[] = new int[40];
 	public PreProcessing(String filename) {
 		try{
 			inputHandle(filename,data);
@@ -14,6 +15,7 @@ public class PreProcessing {
 		}
 
 		expand(data,expandedData);
+		support = calcSupport(expandedData);
 	}
 
 	public void inputHandle(String filename,ArrayList<int[]> data)throws IOException {
@@ -406,5 +408,21 @@ public class PreProcessing {
 			row[8] = data.get(i)[8]+38;
 			expandedData.add(i,row);
 		}
+	}
+	
+	/**
+	 * @param list The list of all transactions
+	 * @return The Support of each product
+	 */
+	public int[] calcSupport(ArrayList<int []> list){
+		int row[] =  new int[40];
+		for(int i=0;i<list.size();i++)
+		{
+			for(int j=0;j<list.get(i).length;j++)
+			{
+				row[list.get(i)[j]]++;
+			}
+		}
+		return row;
 	}
 }
