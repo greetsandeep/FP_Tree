@@ -17,7 +17,7 @@ public class PreProcessing {
 
 		expand(data,expandedData);
 		support = calcSupport(expandedData);
-		//sort(expandedData,sortedExpandedData,support);
+		sort(expandedData,sortedExpandedData,support);
 	}
 
 	public void inputHandle(String filename,ArrayList<int[]> data)throws IOException {

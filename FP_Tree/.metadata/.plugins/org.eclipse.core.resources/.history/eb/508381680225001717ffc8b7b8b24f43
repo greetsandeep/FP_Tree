@@ -17,7 +17,7 @@ public class PreProcessing {
 
 		expand(data,expandedData);
 		support = calcSupport(expandedData);
-		//sort(expandedData,sortedExpandedData,support);
+		sort(expandedData,sortedExpandedData,support);
 	}
 
 	public void inputHandle(String filename,ArrayList<int[]> data)throws IOException {
@@ -325,7 +325,7 @@ public class PreProcessing {
 
 		for(Integer temp : unique)
 			freqTable.put(temp,0);
-
+		
 
 		for(Integer temp : list)
 			freqTable.put(temp, freqTable.get(temp)+1);
@@ -402,7 +402,7 @@ public class PreProcessing {
 			expandedData.add(i,row);
 		}
 	}
-
+	
 	/**
 	 * @param list The list of all transactions
 	 * @return The Support of each product
@@ -415,37 +415,16 @@ public class PreProcessing {
 
 		return row;
 	}
-
-	public void sort(ArrayList<int []> toSort,ArrayList<int []> sort,int []support)
+	
+	public void sort(ArrayList<Integer> toSort,ArrayList<Integer> sort,int []support)
 	{
-		boolean visited[] = new boolean[toSort.size()];
-		int count = 0;
-		while(count<toSort.size()){
-			int item = findMax(support);
-			for(int i=0;i<toSort.size();i++)
-			{
-				if(Arrays.asList(toSort.get(i)).contains(item) && !(visited[i]))
-				{
-					sort.add(toSort.get(i));
-					visited[i] = true;
-					count++;
-				}
-			}
+		while(toSort.size()!=0){
+			findMax(support);
 		}
 	}
-
-	public int findMax(int arr[])
+	
+	public void findMax(int arr[])
 	{
-		int max = 0,index=0;
-		for(int i=0;i<arr.length;i++)
-		{
-			if(max<arr[i])
-			{
-				max = arr[i];
-				arr[i] = -1;
-				index = i;
-			}
-		}
-		return index;
+		
 	}
 }

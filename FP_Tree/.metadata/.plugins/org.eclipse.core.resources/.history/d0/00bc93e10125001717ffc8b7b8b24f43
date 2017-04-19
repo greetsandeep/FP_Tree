@@ -6,7 +6,6 @@ import java.util.*;
 public class PreProcessing {
 	public ArrayList<int []> data = new ArrayList<int[]>();
 	public ArrayList<int []> expandedData = new ArrayList<int[]>();
-	public ArrayList<int []> sortedExpandedData = new ArrayList<int[]>();
 	public int support[] = new int[40];
 	public PreProcessing(String filename) {
 		try{
@@ -17,7 +16,6 @@ public class PreProcessing {
 
 		expand(data,expandedData);
 		support = calcSupport(expandedData);
-		//sort(expandedData,sortedExpandedData,support);
 	}
 
 	public void inputHandle(String filename,ArrayList<int[]> data)throws IOException {
@@ -325,7 +323,7 @@ public class PreProcessing {
 
 		for(Integer temp : unique)
 			freqTable.put(temp,0);
-
+		
 
 		for(Integer temp : list)
 			freqTable.put(temp, freqTable.get(temp)+1);
@@ -350,20 +348,25 @@ public class PreProcessing {
 
 		HashMap<Double, Integer> freqTable = new HashMap<Double,Integer>();
 
-		for(Double temp : unique)
+		for(Double temp : unique){
 			freqTable.put(temp,0);
+		}
 
-		for(Double temp : unique)
+		for(Double temp : unique){
 			freqTable.put(temp, freqTable.get(temp)+1);
+		}
 
 		double max = 0;
-		for(Double temp : unique)
+		for(Double temp : unique){
 			if(freqTable.get(temp)>max)
 				max = temp;
+		}
 
 		for(int i=0;i<list.size();i++)
+		{
 			if(list.get(i)==-1.0)
 				list.set(i,max);
+		}
 	}
 
 
@@ -402,7 +405,7 @@ public class PreProcessing {
 			expandedData.add(i,row);
 		}
 	}
-
+	
 	/**
 	 * @param list The list of all transactions
 	 * @return The Support of each product
@@ -410,42 +413,12 @@ public class PreProcessing {
 	public int[] calcSupport(ArrayList<int []> list){
 		int row[] =  new int[40];
 		for(int i=0;i<list.size();i++)
-			for(int j=0;j<list.get(i).length;j++)
-				row[list.get(i)[j]]++;
-
-		return row;
-	}
-
-	public void sort(ArrayList<int []> toSort,ArrayList<int []> sort,int []support)
-	{
-		boolean visited[] = new boolean[toSort.size()];
-		int count = 0;
-		while(count<toSort.size()){
-			int item = findMax(support);
-			for(int i=0;i<toSort.size();i++)
-			{
-				if(Arrays.asList(toSort.get(i)).contains(item) && !(visited[i]))
-				{
-					sort.add(toSort.get(i));
-					visited[i] = true;
-					count++;
-				}
-			}
-		}
-	}
-
-	public int findMax(int arr[])
-	{
-		int max = 0,index=0;
-		for(int i=0;i<arr.length;i++)
 		{
-			if(max<arr[i])
+			for(int j=0;j<list.get(i).length;j++)
 			{
-				max = arr[i];
-				arr[i] = -1;
-				index = i;
+				row[list.get(i)[j]]++;
 			}
 		}
-		return index;
+		return row;
 	}
 }
