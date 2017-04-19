@@ -20,6 +20,11 @@
 		<item value="/home/sandeep/Desktop/Assignments/Data Mining/Assignment-2/FP_Tree/FP_TREE/doc" key="destdir"/>
 		<item value="false" key="openinbrowser"/>
 		<section name="projects">
+			<section name="FP_TREE">
+				<item value="/home/sandeep/Desktop/Assignments/Data Mining/Assignment-2/FP_Tree/FP_TREE/javadoc.xml" key="antpath"/>
+				<item value="/home/sandeep/Desktop/Assignments/Data Mining/Assignment-2/FP_Tree/FP_TREE/doc" key="destdir"/>
+				<item value="" key="href"/>
+			</section>
 		</section>
 	</section>
 	<section name="org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart">

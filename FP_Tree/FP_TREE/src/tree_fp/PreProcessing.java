@@ -3,18 +3,17 @@ package tree_fp;
 import java.io.*;
 import java.util.*;
 
-import org.omg.PortableInterceptor.INACTIVE;
-
-
-
 public class PreProcessing {
 	public ArrayList<int []> data = new ArrayList<int[]>();
+	public ArrayList<int []> expandedData = new ArrayList<int[]>();
 	public PreProcessing(String filename) {
 		try{
 			inputHandle(filename,data);
 		}catch(Exception e){
 			System.out.println("\nError In file Reading " + e);
 		}
+
+		expand(data,expandedData);
 	}
 
 	public void inputHandle(String filename,ArrayList<int[]> data)throws IOException {
@@ -30,7 +29,7 @@ public class PreProcessing {
 		ArrayList<Double> bmi = new ArrayList<Double>();
 		ArrayList<Double> pedigree = new ArrayList<Double>();
 		ArrayList<Integer> age = new ArrayList<Integer>();
-		ArrayList<Boolean> diabetes = new ArrayList<Boolean>();
+		ArrayList<Integer> diabetes = new ArrayList<Integer>();
 
 		while((line=br.readLine()) != null) {
 			StringTokenizer st = new StringTokenizer(line,",");
@@ -44,7 +43,7 @@ public class PreProcessing {
 				bmi.add(Double.parseDouble(st.nextToken()));
 				pedigree.add(Double.parseDouble(st.nextToken()));
 				age.add(Integer.parseInt(st.nextToken()));
-				diabetes.add(Integer.parseInt(st.nextToken())==1?true:false);
+				diabetes.add(Integer.parseInt(st.nextToken()));
 			}
 		} 
 
@@ -57,18 +56,35 @@ public class PreProcessing {
 		discBMI(bmi);
 		discPedigree(pedigree);
 		discAge(age);
-		
+
 		handleMissing(age);
 		handleMissing(serum);
 		handleMissing(skinFold);
 		handleMissing(blood_pressure);
 		handleMissing(plasma);
 		handleMissing(pregnancy);
-		
+
 		handleMissingDouble(pedigree);
 		handleMissingDouble(bmi);
+
+
+		for(int i=0;i<pregnancy.size();i++)
+		{
+			int row[] = new int[9];
+			row[0] = pregnancy.get(i);
+			row[1] = plasma.get(i);
+			row[2] = blood_pressure.get(i);
+			row[3] = skinFold.get(i);
+			row[4] = serum.get(i);
+			row[5] = bmi.get(i).intValue();
+			row[6] = pedigree.get(i).intValue();
+			row[7] = age.get(i);
+			row[8] = diabetes.get(i);
+			data.add(i,row);
+		}
 		br.close();
 	}
+
 	/**
 	 * @param pregnancy Takes in an ArrayList of Pregnancies and classifies into sub categories as mentioned.
 	 * The Classification Principle is Equal Frequency Classes
@@ -87,12 +103,12 @@ public class PreProcessing {
 			else if(pregnancy.get(i)>=5 && pregnancy.get(i)<=7)
 				pregnancy.set(i,5);
 			else
-				pregnancy.set(i,5);
+				pregnancy.set(i,6);
 		}
 		String categories[] = {"0","1","2",">=3 and <=4",">=5 and <=7",">7"};
 		DataRef.subclasses.put(1,categories);
 	}
-	
+
 	/**
 	 * @param plasma Takes in an ArrayList of Plasma Glucose Conc. and classifies into sub categories as mentioned.
 	 * The Classification Principle is Equal Frequency Classes
@@ -141,12 +157,55 @@ public class PreProcessing {
 		DataRef.subclasses.put(3,categories);
 	}
 
-
+	/**
+	 * @param skinFold Takes in an ArrayList of Triceps skin fold thickness and classifies into sub categories as mentioned. 
+	 * The Classification Principle is Equal Frequency Classes
+	 * The function feeds -1 in case of missing values which in this data set have been represented by 0
+	 */
 	public void discSkinFold(ArrayList<Integer> skinFold){
-		
+
+		for(int i=0;i<skinFold.size();i++)
+		{
+			if(skinFold.get(i)==0)
+				skinFold.set(i,-1);
+			else if(skinFold.get(i)<=19)
+				skinFold.set(i,1);
+			else if(skinFold.get(i)<=26)
+				skinFold.set(i,2);
+			else if(skinFold.get(i)<=31)
+				skinFold.set(i,3);
+			else if(skinFold.get(i)<=38)
+				skinFold.set(i,4);
+			else
+				skinFold.set(i,5);
+		}
+		String categories[] = {"<=19",">19 and <=26",">26 and <=31",">31 and <=38",">38"};
+		DataRef.subclasses.put(4,categories);
 	}
+	/**
+	 * @param serum Takes in an ArrayList of 2-Hour serum insulin (mu U/ml) and classifies into sub categories as mentioned. 
+	 * The Classification Principle is Equal Frequency Classes
+	 * The function feeds -1 in case of missing values which in this data set have been represented by 0
+	 */
 	public void discSerum(ArrayList<Integer> serum){
 
+		for(int i=0;i<serum.size();i++)
+		{
+			if(serum.get(i)==0)
+				serum.set(i,-1);
+			else if(serum.get(i)<=70)
+				serum.set(i,1);
+			else if(serum.get(i)<=106)
+				serum.set(i,2);
+			else if(serum.get(i)<=150)
+				serum.set(i,3);
+			else if(serum.get(i)<=210)
+				serum.set(i,4);
+			else
+				serum.set(i,5);
+		}
+		String categories[] = {"<=70",">70 and <=106",">106 and <=150",">150 and <=210",">210"};
+		DataRef.subclasses.put(5,categories);
 	}
 
 
@@ -172,10 +231,44 @@ public class PreProcessing {
 	}
 
 
+	/**
+	 * @param pedigree Takes in an ArrayList of Diabetes pedigree function and classifies into sub categories as mentioned.
+	 * This discretisation function uses the equal width stratergy to classify data
+	 */
 	public void discPedigree(ArrayList<Double> pedigree){
-
+		double min = 100,max = 0;
+		for(int i=0;i<pedigree.size();i++){
+			if(pedigree.get(i)>max)
+				max = pedigree.get(i);
+			if(pedigree.get(i)<min)
+				min = pedigree.get(i);
+		}
+		double width = (max-min)/5;
+		for(int i=0;i<pedigree.size();i++)
+		{
+			if(pedigree.get(i)==0)
+				pedigree.set(i,-1.0);
+			else
+			{
+				for(int j=1;j<6;j++)
+				{
+					if(pedigree.get(i)<= min+(j*width))
+					{
+						pedigree.set(i,(double)j);
+						break;
+					}
+				}
+			}
+		}
+		String temp[] = new String[5];
+		for(int i=1;i<6;i++)
+		{
+			String temp1 =" >= "+ Double.toString(min+(i-1)*width)+ " and <= " + Double.toString(min+i*width);
+			temp[i-1] = temp1;
+		}
+		DataRef.subclasses.put(8,temp);
 	}
-	
+
 	/**
 	 * @param age Takes in an ArrayList of Ages and classifies into sub categories as mentioned.
 	 * This discretisation function uses the equal width stratergy to classify data
@@ -199,7 +292,10 @@ public class PreProcessing {
 				for(int j=1;j<6;j++)
 				{
 					if(age.get(i)<= min+(j*width))
+					{
 						age.set(i,j);
+						break;
+					}
 				}
 			}
 		}
@@ -220,18 +316,23 @@ public class PreProcessing {
 		TreeSet<Integer> unique = new TreeSet<Integer>();
 		for(int i=0;i<list.size();i++)
 			unique.add(list.get(i));
-		
+
 		HashMap<Integer, Integer> freqTable = new HashMap<Integer,Integer>();
-		
+
 		for(Integer temp : unique){
+			freqTable.put(temp,0);
+		}
+
+		for(Integer temp : list){
 			freqTable.put(temp, freqTable.get(temp)+1);
 		}
+
 		int max = 0;
 		for(Integer temp : unique){
 			if(freqTable.get(temp)>max)
 				max = temp;
 		}
-		
+
 		for(int i=0;i<list.size();i++)
 		{
 			if(list.get(i)==-1)
@@ -246,22 +347,64 @@ public class PreProcessing {
 		TreeSet<Double> unique = new TreeSet<Double>();
 		for(int i=0;i<list.size();i++)
 			unique.add(list.get(i));
-		
+
 		HashMap<Double, Integer> freqTable = new HashMap<Double,Integer>();
-		
+
+		for(Double temp : unique){
+			freqTable.put(temp,0);
+		}
+
 		for(Double temp : unique){
 			freqTable.put(temp, freqTable.get(temp)+1);
 		}
+
 		double max = 0;
 		for(Double temp : unique){
 			if(freqTable.get(temp)>max)
 				max = temp;
 		}
-		
+
 		for(int i=0;i<list.size();i++)
 		{
 			if(list.get(i)==-1.0)
 				list.set(i,max);
+		}
+	}
+
+
+	/**
+	 * @param row the row which we want to print
+	 * An utility function that prints the passed array
+	 */
+	public static void printArray(int []row){
+		for(int i=0;i<row.length;i++)
+			System.out.print(row[i]+" ");
+		System.out.println();
+	}
+	public static void printArray(double []row){
+		for(int i=0;i<row.length;i++)
+			System.out.print(row[i]+" ");
+		System.out.println();
+	}
+
+	/**
+	 * @param data The data to be handled
+	 * @param expandedData The representation of data considering each category to be a product
+	 */
+	public static void expand(ArrayList<int []> data, ArrayList<int []> expandedData){
+		for(int i=0;i<data.size();i++)
+		{
+			int row[] = new int[9];
+			row[0] = data.get(i)[0];
+			row[1] = data.get(i)[1]+6;
+			row[2] = data.get(i)[2]+11;
+			row[3] = data.get(i)[3]+15;
+			row[4] = data.get(i)[4]+20;
+			row[5] = data.get(i)[5]+25;
+			row[6] = data.get(i)[6]+30;
+			row[7] = data.get(i)[7]+33;
+			row[8] = data.get(i)[8]+38;
+			expandedData.add(i,row);
 		}
 	}
 }

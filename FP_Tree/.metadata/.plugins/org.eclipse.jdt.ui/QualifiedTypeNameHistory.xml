@@ -2,12 +2,12 @@
 <qualifiedTypeNameHistroy>
 <fullyQualifiedTypeName name="java.lang.String"/>
 <fullyQualifiedTypeName name="javax.xml.crypto.Data"/>
-<fullyQualifiedTypeName name="tree_fp.DataRef"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="java.util.TreeSet"/>
 <fullyQualifiedTypeName name="org.omg.PortableInterceptor.INACTIVE"/>
-<fullyQualifiedTypeName name="java.util.HashMap"/>
-<fullyQualifiedTypeName name="java.lang.Integer"/>
 <fullyQualifiedTypeName name="java.beans.FeatureDescriptor"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="tree_fp.DataRef"/>
 <fullyQualifiedTypeName name="java.lang.Double"/>
+<fullyQualifiedTypeName name="java.lang.Integer"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
 </qualifiedTypeNameHistroy>
