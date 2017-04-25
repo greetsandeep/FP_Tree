@@ -6,8 +6,8 @@ import java.util.*;
 public class PreProcessing {
 	public ArrayList<int []> data = new ArrayList<int[]>();
 	public ArrayList<int []> expandedData = new ArrayList<int[]>();
-	public ArrayList<int []> sortedExpandedData = new ArrayList<int[]>();
-	public int support[] = new int[40];
+	//public ArrayList<int []> sortedExpandedData = new ArrayList<int[]>();
+	public int support[] = new int[41];
 	public PreProcessing(String filename) {
 		try{
 			inputHandle(filename,data);
@@ -17,7 +17,28 @@ public class PreProcessing {
 
 		expand(data,expandedData);
 		support = calcSupport(expandedData);
-		//sort(expandedData,sortedExpandedData,support);
+		/*for(int i=0;i<expandedData.size();i++){
+			for(int j=0;j<expandedData.get(i).length;j++){
+				System.out.print(expandedData.get(i)[j]+" ");
+			}
+			System.out.println(" ");
+					
+		}
+		System.out.println("Support Count: ");
+		for(int j=1;j<support.length;j++){
+			System.out.print(support[j] +" ");
+		}
+		System.out.println(" ");
+		System.out.println("After Sorting: ");*/
+		sort(expandedData,support);
+		/*for(int i=0;i<expandedData.size();i++){
+			for(int j=0;j<expandedData.get(i).length;j++){
+				System.out.print(expandedData.get(i)[j]+" ");
+			}
+			System.out.println(" ");
+					
+		}*/
+		
 	}
 
 	public void inputHandle(String filename,ArrayList<int[]> data)throws IOException {
@@ -60,6 +81,7 @@ public class PreProcessing {
 		discBMI(bmi);
 		discPedigree(pedigree);
 		discAge(age);
+		discDiabetes(diabetes);
 
 		handleMissing(age);
 		handleMissing(serum);
@@ -123,11 +145,11 @@ public class PreProcessing {
 		{
 			if(plasma.get(i)==0)
 				plasma.set(i,-1);
-			else if(plasma.get(i)>=44 &&plasma.get(i)<=98)
+			else if(plasma.get(i)>=44 &&plasma.get(i)<99)
 				plasma.set(i,1);
-			else if(plasma.get(i)>=99 && plasma.get(i)<=110)
+			else if(plasma.get(i)>=99 && plasma.get(i)<111)
 				plasma.set(i,2);
-			else if(plasma.get(i)>=111 && plasma.get(i)<=126)
+			else if(plasma.get(i)>=111 && plasma.get(i)<127)
 				plasma.set(i,3);
 			else if(plasma.get(i)>=127 && plasma.get(i)<=150)
 				plasma.set(i,4);
@@ -275,7 +297,7 @@ public class PreProcessing {
 
 	/**
 	 * @param age Takes in an ArrayList of Ages and classifies into sub categories as mentioned.
-	 * This discretisation function uses the equal width stratergy to classify data
+	 * This discretization function uses the equal width strategy to classify data
 	 * Missing data is represented as -1
 	 */
 	public void discAge(ArrayList<Integer> age){
@@ -310,6 +332,19 @@ public class PreProcessing {
 			temp[i-1] = temp1;
 		}
 		DataRef.subclasses.put(8,temp);
+	}
+	
+	public void discDiabetes(ArrayList<Integer> diabetes){
+		for(int i=0;i<diabetes.size();i++)
+		{
+			if(diabetes.get(i)==0)
+				diabetes.set(i,1);
+			
+			else
+				diabetes.set(i,2);
+		}
+		String categories[] = {"No","Yes"};
+		DataRef.subclasses.put(9,categories);
 	}
 
 	/**
@@ -408,7 +443,7 @@ public class PreProcessing {
 	 * @return The Support of each product
 	 */
 	public int[] calcSupport(ArrayList<int []> list){
-		int row[] =  new int[40];
+		int row[] =  new int[41];
 		for(int i=0;i<list.size();i++)
 			for(int j=0;j<list.get(i).length;j++)
 				row[list.get(i)[j]]++;
@@ -416,36 +451,26 @@ public class PreProcessing {
 		return row;
 	}
 
-	public void sort(ArrayList<int []> toSort,ArrayList<int []> sort,int []support)
+	public void sort(ArrayList<int []> toSort, int []support)
 	{
-		boolean visited[] = new boolean[toSort.size()];
-		int count = 0;
-		while(count<toSort.size()){
-			int item = findMax(support);
-			for(int i=0;i<toSort.size();i++)
+		
+		
+		for(int c =0; c<toSort.size();c++){
+			
+			for(int i=0;i<(toSort.get(c).length - 1);i++)
 			{
-				if(Arrays.asList(toSort.get(i)).contains(item) && !(visited[i]))
-				{
-					sort.add(toSort.get(i));
-					visited[i] = true;
-					count++;
+				for(int j=0;j<(toSort.get(c).length - i - 1);j++){
+					if(support[toSort.get(c)[j]] < support[toSort.get(c)[j+1]]){
+						int temp;
+						temp = toSort.get(c)[j];
+						toSort.get(c)[j] = toSort.get(c)[j+1];
+						toSort.get(c)[j+1] = temp;
+					}
 				}
+				
 			}
 		}
 	}
 
-	public int findMax(int arr[])
-	{
-		int max = 0,index=0;
-		for(int i=0;i<arr.length;i++)
-		{
-			if(max<arr[i])
-			{
-				max = arr[i];
-				arr[i] = -1;
-				index = i;
-			}
-		}
-		return index;
-	}
+	
 }
