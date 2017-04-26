@@ -99,4 +99,6 @@ public class FP_Tree {
 			stack.remove(node);
 		}
 	}
+	
+	/* For refs - BFS (same as level order traversal in the tree) - to figure out the next pointer to point to. Maintain a list of current pointers (in sorted order so lookup is easy) */
 }
