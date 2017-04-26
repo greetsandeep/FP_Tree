@@ -45,16 +45,24 @@ public class FP_Tree {
 	/**
 	 * @param item The item to be inserted in the children list of this node
 	 */
-	public void addChild(int item){
+	public void addChild(int item, ArrayList<FP_Tree> startNode){
 		FP_Tree child = new FP_Tree(item,this.pos,this.children.size()+1);
 		this.children.add(child);
+		if(startNode.get(child.item)==null){
+			startNode.set(child.item, child);
+			startNode.set(child.item, child);
+		}
+		else{
+			child.ref = startNode.get(child.item);
+			startNode.set(child.item, child);
+		}
 	}
 	
 	
 	/**
 	 * @param transaction The transaction to be added in the tree. Takes transaction as an array of integers.
 	 */
-	public void addTransaction(int transaction[]){
+	public void addTransaction(int transaction[], ArrayList<FP_Tree> startNode){
 		FP_Tree node = this;
 		boolean flag = false;
 		for(int i=0;i<transaction.length;i++){
@@ -64,10 +72,11 @@ public class FP_Tree {
 					node = node.children.get(j);
 					node.count = node.count + 1;
 					flag = true;
+					break;
 				}
 			}
 			if(!flag){
-				node.addChild(transaction[i]);
+				node.addChild(transaction[i],startNode);
 				node = node.children.get(node.children.size()-1);
 			}
 		}
@@ -94,7 +103,11 @@ public class FP_Tree {
 				}
 				System.out.print(") ");
 				System.out.print(node.item+":");
-				System.out.println(node.count);
+				System.out.print(node.count+" ");
+				if(node.ref!=null)
+					System.out.println("   ref to "+node.ref.pos);	
+				else
+					System.out.println("   ref to null");
 			}
 			stack.remove(node);
 		}
