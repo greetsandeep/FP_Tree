@@ -113,6 +113,13 @@ public class FP_Tree {
 		}
 	}
 	
+	/**
+	 * Functions builds a new tree which is a sub-tree of tree object that called it
+	 * @param endWith The integer with which should exist in all the leaves. Hence all other branches and nodes that come after this node are pruned out
+	 * @param start The reference to the starting node of one of the 'endWith' nodes. All other nodes are linked to each other after this, with start referring to the beginning node
+	 * @param subStartNode The list of references built in the new sub tree
+	 * @return The new sub tree formed
+	 */
 	public FP_Tree subTree(int endWith, FP_Tree start, ArrayList<FP_Tree> subStartNode){
 		FP_Tree sub = new FP_Tree(-1*endWith,null,0);
 		FP_Tree curr = start;
@@ -135,6 +142,13 @@ public class FP_Tree {
 		return sub;
 	}
 	
+	/**
+	 * @param startNode The list of references which refer to each kind of node item in the tree that called the function
+	 * @param minsup The minimum support value
+	 * @param subStartNode The list of references built in the new sub tree
+	 * @param support The array of support values of each kind of node item in the current sub tree that called the function
+	 * @return the new conditional sub tree based on pruning of nodes that don't cross the support count threshold
+	 */
 	public FP_Tree conditionalSubTree(ArrayList<FP_Tree> startNode, int minsup, ArrayList<FP_Tree> subStartNode,int support[]){
 		FP_Tree condSub = new FP_Tree(this.item,null,0);
 		FP_Tree node = this;
@@ -162,13 +176,17 @@ public class FP_Tree {
 				for(int i=0;i<transaction.size();i++){
 					tran[i] = transaction.get(i);
 				}
-				condSub.addTransaction(tran, subStartNode);
+				for(int i=0;i<curr.count;i++)
+					condSub.addTransaction(tran, subStartNode);
 			}
 			curr = curr.ref;
 		}
 		return condSub;
 	}
 	
+	/**
+	 * @return The next candidates to be considered along with the already previously considered for generating the frequent itemsets
+	 */
 	public ArrayList<Integer> getNextEnd(){
 		ArrayList<Integer> nextEnd = new ArrayList<Integer>();
 		ArrayList<FP_Tree> stack = new ArrayList<FP_Tree>();
