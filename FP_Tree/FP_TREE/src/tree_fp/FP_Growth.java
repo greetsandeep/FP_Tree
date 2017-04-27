@@ -26,7 +26,6 @@ public class FP_Growth {
 		for(int i=0;i<6;i++){
 			startNode.add(null);
 			subStartNode.add(null);
-			condSubStartNode.add(null);
 		}
 		
 		int test1[] = {1,2};
@@ -61,18 +60,34 @@ public class FP_Growth {
 		/*for(int i=1;i<6;i++){
 			System.out.println(startNode.get(i).pos);
 		}*/
+		
+		for(int j=0;j<6;j++){
+			condSubStartNode.add(startNode.get(j));
+		}
+		
 		for(int i=1;i<support.length;i++){
 			if(support[i]>2){
 				TreeSet<Integer> set = new TreeSet<Integer>();
 				set.add(i);
 				itemWithSupport.put(set,support[i]);
+				FP_Tree sub = new FP_Tree((-1)*i,null,0);
+				for(int j=0;j<6;j++){
+					subStartNode.add(null);
+				}
+				sub = fp.subTree(i, condSubStartNode.get(i), subStartNode);
+				FP_Tree condSub = new FP_Tree(-1*i,null,0);
+				for(int j=0;j<6;j++){
+					condSubStartNode.add(null);
+				}
+				condSub = sub.conditionalSubTree(subStartNode, 2, condSubStartNode);
+				
 			}
 		}
-		FP_Tree sub = new FP_Tree(-5,null,0);
-		FP_Tree condSub = new FP_Tree(-5,null,0);
-		sub = fp.subTree(5, startNode.get(5), subStartNode);
-		condSub = sub.conditionalSubTree(subStartNode, 2, condSubStartNode);
-		condSub.treeTraversal();
+		
+		
+		
+		
+		//condSub.treeTraversal();
 		//sub.treeTraversal();
 		
 		
