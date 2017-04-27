@@ -94,7 +94,7 @@ public class FP_Tree {
 			for(int i=node.children.size()-1;i>=0;i--){
 				stack.add(0,node.children.get(i));
 			}
-			if(node.item!=-1){
+			if(node.item>=0){
 				System.out.print("(");
 				for(int i=0;i<node.pos.size();i++){
 					System.out.print(node.pos.get(i));
@@ -114,13 +114,13 @@ public class FP_Tree {
 	}
 	
 	public FP_Tree subTree(int endWith, FP_Tree start, ArrayList<FP_Tree> subStartNode){
-		FP_Tree sub = new FP_Tree(-1,null,0);
+		FP_Tree sub = new FP_Tree(-1*endWith,null,0);
 		FP_Tree curr = start;
 		FP_Tree node = this;
 		while(curr!=null){
 			node=this;
 			ArrayList<Integer> transaction = new ArrayList<Integer>();
-			for(int i=0;i<curr.pos.size()-1;i++){
+			for(int i=0;i<curr.pos.size();i++){
 				node = node.children.get(curr.pos.get(i)-1);
 				transaction.add(node.item);
 			}
@@ -134,8 +134,37 @@ public class FP_Tree {
 		return sub;
 	}
 	
-	public void conditionalSubTree(ArrayList<FP_Tree> startNode, int minsup){
+	public FP_Tree conditionalSubTree(ArrayList<FP_Tree> startNode, int minsup, ArrayList<FP_Tree> subStartNode){
+		FP_Tree condSub = new FP_Tree(this.item,null,0);
 		FP_Tree node = this;
-		
+		FP_Tree curr = this;
+		int support[] = new int[startNode.size()];
+		for(int i=1;i<startNode.size();i++){
+			curr = startNode.get(i);
+			while(curr!=null){
+				support[i] += curr.count;
+				curr = curr.ref;
+			}
+		}
+		curr = startNode.get(-1*this.item);
+		while(curr!=null){
+			node=this;
+			ArrayList<Integer> transaction = new ArrayList<Integer>();
+			for(int i=0;i<curr.pos.size()-1;i++){
+				node = node.children.get(curr.pos.get(i)-1);
+				if(support[node.item]>=minsup){
+					transaction.add(node.item);
+				}
+			}
+			if(transaction.size()>0){
+				int tran[] = new int[transaction.size()];
+				for(int i=0;i<transaction.size();i++){
+					tran[i] = transaction.get(i);
+				}
+				condSub.addTransaction(tran, subStartNode);
+			}
+			curr = curr.ref;
+		}
+		return condSub;
 	}
 }
