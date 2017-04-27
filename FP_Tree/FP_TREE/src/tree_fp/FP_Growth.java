@@ -5,9 +5,6 @@ import java.util.*;
 public class FP_Growth {
 	public static ArrayList<int []> data = new ArrayList<int[]>();
 	public static ArrayList<FP_Tree> startNode = new ArrayList<FP_Tree>();
-	public static ArrayList<FP_Tree> subStartNode = new ArrayList<FP_Tree>();
-	public static ArrayList<FP_Tree> condSubStartNode = new ArrayList<FP_Tree>();
-	
 	public static HashMap<TreeSet<Integer>, Integer> itemWithSupport = new HashMap<TreeSet<Integer>, Integer>();
 	
 	public static void main(String args[]){
@@ -25,7 +22,6 @@ public class FP_Growth {
 		
 		for(int i=0;i<6;i++){
 			startNode.add(null);
-			subStartNode.add(null);
 		}
 		
 		int test1[] = {1,2};
@@ -61,35 +57,52 @@ public class FP_Growth {
 			System.out.println(startNode.get(i).pos);
 		}*/
 		
-		for(int j=0;j<6;j++){
-			condSubStartNode.add(startNode.get(j));
-		}
 		
+		
+		FP_Growth fpg = new FP_Growth();
+		TreeSet<Integer> set = new TreeSet<Integer>();
 		for(int i=1;i<support.length;i++){
 			if(support[i]>2){
-				TreeSet<Integer> set = new TreeSet<Integer>();
-				set.add(i);
-				itemWithSupport.put(set,support[i]);
-				FP_Tree sub = new FP_Tree((-1)*i,null,0);
-				for(int j=0;j<6;j++){
-					subStartNode.add(null);
-				}
-				sub = fp.subTree(i, condSubStartNode.get(i), subStartNode);
-				FP_Tree condSub = new FP_Tree(-1*i,null,0);
-				for(int j=0;j<6;j++){
-					condSubStartNode.add(null);
-				}
-				condSub = sub.conditionalSubTree(subStartNode, 2, condSubStartNode);
-				
+				fpg.generateItemsets(fp, i, 2, support,set,startNode);
 			}
 		}
 		
-		
-		
-		
+		for(Map.Entry<TreeSet<Integer>, Integer> e: itemWithSupport.entrySet()){
+			System.out.println(e.getKey()+" "+e.getValue());
+		}
 		//condSub.treeTraversal();
 		//sub.treeTraversal();
-		
-		
+	}
+	
+	public void generateItemsets(FP_Tree tree, int endWith, int minsup, int support[],TreeSet<Integer> subSet, ArrayList<FP_Tree> startNode){
+		TreeSet<Integer> set = new TreeSet<Integer>(subSet);
+		ArrayList<Integer> candidates = new ArrayList<Integer>();
+		ArrayList<FP_Tree> subStartNode = new ArrayList<FP_Tree>();
+		ArrayList<FP_Tree> condSubStartNode = new ArrayList<FP_Tree>();
+		set.add(endWith);
+		itemWithSupport.put(set,support[endWith]);
+		support = new int[support.length];
+		FP_Tree sub = new FP_Tree((-1)*endWith,null,0);
+		for(int j=0;j<support.length;j++){
+			subStartNode.add(null);
+		}
+		sub = tree.subTree(endWith, startNode.get(endWith), subStartNode);
+		FP_Tree curr = tree;
+		for(int i=1;i<subStartNode.size();i++){
+			curr = subStartNode.get(i);
+			while(curr!=null){
+				support[i] += curr.count;
+				curr = curr.ref;
+			}
+		}
+		FP_Tree condSub = new FP_Tree(-1*endWith,null,0);
+		for(int j=0;j<support.length;j++){
+			condSubStartNode.add(null);
+		}
+		condSub = sub.conditionalSubTree(subStartNode, 2, condSubStartNode,support);
+		candidates = condSub.getNextEnd();
+		for(int i = 0;i<candidates.size();i++){
+			generateItemsets(condSub,candidates.get(i),minsup,support,set,condSubStartNode);
+		}
 	}
 }
