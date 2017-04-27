@@ -113,5 +113,29 @@ public class FP_Tree {
 		}
 	}
 	
-	/* For refs - BFS (same as level order traversal in the tree) - to figure out the next pointer to point to. Maintain a list of current pointers (in sorted order so lookup is easy) */
+	public FP_Tree subTree(int endWith, FP_Tree start, ArrayList<FP_Tree> subStartNode){
+		FP_Tree sub = new FP_Tree(-1,null,0);
+		FP_Tree curr = start;
+		FP_Tree node = this;
+		while(curr!=null){
+			node=this;
+			ArrayList<Integer> transaction = new ArrayList<Integer>();
+			for(int i=0;i<curr.pos.size()-1;i++){
+				node = node.children.get(curr.pos.get(i)-1);
+				transaction.add(node.item);
+			}
+			int tran[] = new int[transaction.size()];
+			for(int i=0;i<transaction.size();i++){
+				tran[i] = transaction.get(i);
+			}
+			sub.addTransaction(tran, subStartNode);
+			curr = curr.ref;
+		}
+		return sub;
+	}
+	
+	public void conditionalSubTree(ArrayList<FP_Tree> startNode, int minsup){
+		FP_Tree node = this;
+		
+	}
 }

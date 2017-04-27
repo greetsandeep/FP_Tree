@@ -5,6 +5,7 @@ import java.util.*;
 public class FP_Growth {
 	public static ArrayList<int []> data = new ArrayList<int[]>();
 	public static ArrayList<FP_Tree> startNode = new ArrayList<FP_Tree>();
+	public static ArrayList<FP_Tree> subStartNode = new ArrayList<FP_Tree>();
 	
 	public static void main(String args[]){
 		PreProcessing pre = new PreProcessing("rule.data");
@@ -21,6 +22,7 @@ public class FP_Growth {
 		
 		for(int i=0;i<6;i++){
 			startNode.add(null);
+			subStartNode.add(null);
 		}
 		
 		int test1[] = {1,2};
@@ -45,13 +47,19 @@ public class FP_Growth {
 		fp.addTransaction(test9, startNode);
 		fp.addTransaction(test10, startNode);
   		
+		int supp[] = {0,8,7,6,5,3};
+ 		
 		/*for(int i=0;i<data.size();i++){
 			fp.addTransaction(data.get(i), startNode);
 		}*/
 		
-		fp.treeTraversal();
-		for(int i=1;i<6;i++){
+		//fp.treeTraversal();
+		/*for(int i=1;i<6;i++){
 			System.out.println(startNode.get(i).pos);
-		}
+		}*/
+		
+		FP_Tree sub = new FP_Tree(-5,null,0);
+		sub = fp.subTree(5, startNode.get(5), subStartNode);
+		sub.treeTraversal();
 	}
 }
