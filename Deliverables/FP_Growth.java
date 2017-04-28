@@ -1,17 +1,26 @@
 import java.util.*;
 import java.io.*;
 
+/**
+ * @author Poojitha, Snehal, Sandeep
+ * AIM: Applying FP Tree and FP Growth algorithm to generate Association rules.
+ */
 public class FP_Growth {
-	public static ArrayList<int []> data = new ArrayList<int[]>();
 	
+	/**A Global ArrayList of integer arrays to store the preprocessed data. */
+	public static ArrayList<int []> data = new ArrayList<int[]>(); 
+	
+	/**A global array list of FP_Tree to store the ending node of all items in the main tree. */
 	public static ArrayList<FP_Tree> startNode = new ArrayList<FP_Tree>();
 	
+	/** A global Hash map of treeset of integers and integer to store the frequent item sets with their supports. */
 	public static HashMap<TreeSet<Integer>, Integer> itemWithSupport = new HashMap<TreeSet<Integer>, Integer>();
 	
-	public static HashMap<ArrayList<TreeSet<Integer>>, Double> confidentRules = new HashMap<ArrayList<TreeSet<Integer>>, Double>();
+	/** A global Hash map of array list of tree set of integers and double to store the LHS and RHS of a rule with its confidence.*/
+	public static HashMap<ArrayList<TreeSet<Integer>>, Double> confidentRules = new HashMap<ArrayList<TreeSet<Integer>>, Double>(); 
 	
 	public static void main(String args[]){
-		PreProcessing pre = new PreProcessing("rule.data");
+		PreProcessing pre = new PreProcessing("rule.data"); /** An Object of Preprocessing Class */
 		int[] row;
 		for(int i=0;i<pre.expandedData.size();i++){
 			row = new int[9];
@@ -23,7 +32,7 @@ public class FP_Growth {
 		
 		long startTime = System.currentTimeMillis();
 		
-		FP_Tree fp = new FP_Tree(-1,null,0);
+		FP_Tree fp = new FP_Tree(-1,null,0); /** Creates a FP tree with just root */
 		
 		for(int i=0;i<pre.support.length;i++){
 			startNode.add(null);
@@ -57,17 +66,16 @@ public class FP_Growth {
 			fp.addTransaction(data.get(i), startNode);
 		}
 		
-		int minsup = 153;
+		int minsup = 115;
 		double minConfidence = 0.9;
 		
-		FP_Growth fpg = new FP_Growth();
+		FP_Growth fpg = new FP_Growth(); /** An Object of FP_Tree class.*/
 		TreeSet<Integer> set = new TreeSet<Integer>();
 		for(int i=1;i<pre.support.length;i++){
 			if(pre.support[i]>minsup){
 				fpg.generateItemsets(fp, i, minsup, pre.support,set,startNode);
 			}
 		}
-		System.out.println("Support: "+minsup+"\n"+"Confidence: "+minConfidence);
 		System.out.println("Total No. of Frequent Itemsets: "+itemWithSupport.size());
 		
 		/*for(Map.Entry<TreeSet<Integer>, Integer> e: itemWithSupport.entrySet()){
@@ -78,9 +86,9 @@ public class FP_Growth {
 		System.out.println("\nThe Time elapsed to find all frequent Item Subsets: " + (supportStopTime-startTime)+" milliseconds\n");
 		
 		System.out.println("Rules Generated: ");
+		
 		confidentRuleGen(minConfidence);
-		
-		
+				
 		System.out.println(" ");
 		System.out.println("No of Rules: "+confidentRules.size());
 		System.out.println(" ");
@@ -91,6 +99,17 @@ public class FP_Growth {
 		
 	}
 	
+	/**
+	 * @param tree The main tree whose subtree(ending with a specified item) has to be generated
+	 * @param endWith The item with which every path in the subtree should end
+	 * @param minsup Minimum Support
+	 * @param support The integer array containing the support of all the elements
+	 * @param subSet Candidate frequent itemset which is appended to create a frequent itemset
+	 * @param startNode An array containing the ending node of all items.
+	 * This function recursively finds all the frequent itemsets ending with a particular item by creating a subtree,
+	 * then pruning it to create a conditional FP Tree.
+	 * It then adds the frequent itemset to the Hashmap itemWithSupport.
+	 */
 	public void generateItemsets(FP_Tree tree, int endWith, int minsup, int support[],TreeSet<Integer> subSet, ArrayList<FP_Tree> startNode){
 		TreeSet<Integer> set = new TreeSet<Integer>(subSet);
 		ArrayList<Integer> candidates = new ArrayList<Integer>();
@@ -125,8 +144,7 @@ public class FP_Growth {
 	
 	/**
 	 * @param minConf The Confidence threshold below which any rule would be pruned out for not having sufficient confidence
-	 * This function checks confidence of only those rules who have the element 'democrat' or 'republican' in them.
-	 * It passes such rules to the isConfRule() method
+	 * This function sends every possible candidate rule of all frequent itemsets to the function isConfRule()
 	 */
 	public static void confidentRuleGen(double minConf){
 		
@@ -271,6 +289,10 @@ public class FP_Growth {
 		return candidates;
 	}
 }
+
+/**
+ *	Class that implements the node of the FP Tree.
+ */
 
 class FP_Tree {
 	/** The no. of transactions this element is present at this position */
@@ -474,11 +496,23 @@ class FP_Tree {
 	}
 }
 
+/**
+ * Class that converts the continuous data to discrete data
+ * Handles the missing values and 
+ * Sorts the trasaction based on their support count.
+ */
+
 class PreProcessing {
+	
+	/** An array list of integer arrays that stores the given data */
 	public ArrayList<int []> data = new ArrayList<int[]>();
+	
+	/** An array list of integer arrays that stores the discrete data after pre processing */
 	public ArrayList<int []> expandedData = new ArrayList<int[]>();
-	//public ArrayList<int []> sortedExpandedData = new ArrayList<int[]>();
+	
+	/** An integer array that stores the Support of all items */
 	public int support[] = new int[41];
+	
 	public PreProcessing(String filename) {
 		try{
 			inputHandle(filename,data);
@@ -488,30 +522,17 @@ class PreProcessing {
 
 		expand(data,expandedData);
 		support = calcSupport(expandedData);
-		/*for(int i=0;i<expandedData.size();i++){
-			for(int j=0;j<expandedData.get(i).length;j++){
-				System.out.print(expandedData.get(i)[j]+" ");
-			}
-			System.out.println(" ");
-					
-		}
-		System.out.println("Support Count: ");
-		for(int j=1;j<support.length;j++){
-			System.out.print(support[j] +" ");
-		}
-		System.out.println(" ");
-		System.out.println("After Sorting: ");*/
-		sort(expandedData,support);
-		/*for(int i=0;i<expandedData.size();i++){
-			for(int j=0;j<expandedData.get(i).length;j++){
-				System.out.print(expandedData.get(i)[j]+" ");
-			}
-			System.out.println(" ");
-					
-		}*/
-		
+				
 	}
 
+	/**
+	 * @param filename The file to be read
+	 * @param data The data structure which stores the data in the file
+	 * @throws IOException
+	 * This function reads the input file and stores them in a data structure
+	 * Converts continuous data tob discrete data
+	 * Handles missing values 
+	 */
 	public void inputHandle(String filename,ArrayList<int[]> data)throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(filename));
 		String line=null;
@@ -922,6 +943,11 @@ class PreProcessing {
 		return row;
 	}
 
+	/**
+	 * @param toSort Tha transaction to be sorted
+	 * @param support Array containing support counts of all items
+	 * This function sorts a transaction based on their support counts.
+	 */
 	public void sort(ArrayList<int []> toSort, int []support)
 	{
 		
@@ -942,13 +968,20 @@ class PreProcessing {
 			}
 		}
 	}
-
-	
 }
 
+/**
+ * Class which stores all the attributes in a transaction.
+ */
+
 class DataRef {
+	
+	/** A string array which stores the names of all attributes */
 	public String[] classes = new String[9];
+	
+	/** A global Hash map of integer and string array which stores all the different subclasses after discretizattion of the data. */
 	public static HashMap<Integer, String[]> subclasses = new HashMap<Integer,String[]>();
+	
 	DataRef() {
 		classes[0] = "Number of times pregnant";
 		classes[1] = "Plasma glucose concentration a 2 hours in an oral glucose tolerance test";
