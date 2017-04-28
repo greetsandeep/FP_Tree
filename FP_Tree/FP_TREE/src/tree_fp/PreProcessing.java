@@ -259,7 +259,7 @@ public class PreProcessing {
 
 	/**
 	 * @param pedigree Takes in an ArrayList of Diabetes pedigree function and classifies into sub categories as mentioned.
-	 * This discretisation function uses the equal width stratergy to classify data
+	 * This discretisation function uses the equal width strategy to classify data
 	 */
 	public void discPedigree(ArrayList<Double> pedigree){
 		double min = 100,max = 0;
@@ -292,7 +292,7 @@ public class PreProcessing {
 			String temp1 =" >= "+ Double.toString(min+(i-1)*width)+ " and <= " + Double.toString(min+i*width);
 			temp[i-1] = temp1;
 		}
-		DataRef.subclasses.put(8,temp);
+		DataRef.subclasses.put(7,temp);
 	}
 
 	/**

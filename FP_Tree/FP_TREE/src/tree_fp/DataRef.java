@@ -3,7 +3,7 @@ package tree_fp;
 import java.util.HashMap;
 
 public class DataRef {
-	public static String[] classes;
+	public String[] classes = new String[9];
 	public static HashMap<Integer, String[]> subclasses = new HashMap<Integer,String[]>();
 	DataRef() {
 		classes[0] = "Number of times pregnant";
