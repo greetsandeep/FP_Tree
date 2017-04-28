@@ -2,17 +2,26 @@ package tree_fp;
 
 import java.util.*;
 
+/**
+ * @author Poojitha, Snehal, Sandeep
+ * AIM: Applying FP Tree and FP Growth algorithm to generate Association rules.
+ */
 public class FP_Growth {
-	public static ArrayList<int []> data = new ArrayList<int[]>();
 	
+	/**A Global ArrayList of integer arrays to store the preprocessed data. */
+	public static ArrayList<int []> data = new ArrayList<int[]>(); 
+	
+	/**A global array list of FP_Tree to store the ending node of all items in the main tree. */
 	public static ArrayList<FP_Tree> startNode = new ArrayList<FP_Tree>();
 	
+	/** A global Hash map of treeset of integers and integer to store the frequent item sets with their supports. */
 	public static HashMap<TreeSet<Integer>, Integer> itemWithSupport = new HashMap<TreeSet<Integer>, Integer>();
 	
-	public static HashMap<ArrayList<TreeSet<Integer>>, Double> confidentRules = new HashMap<ArrayList<TreeSet<Integer>>, Double>();
+	/** A global Hash map of array list of tree set of integers and double to store the LHS and RHS of a rule with its confidence.*/
+	public static HashMap<ArrayList<TreeSet<Integer>>, Double> confidentRules = new HashMap<ArrayList<TreeSet<Integer>>, Double>(); 
 	
 	public static void main(String args[]){
-		PreProcessing pre = new PreProcessing("rule.data");
+		PreProcessing pre = new PreProcessing("rule.data"); /** An Object of Preprocessing Class */
 		int[] row;
 		for(int i=0;i<pre.expandedData.size();i++){
 			row = new int[9];
@@ -24,7 +33,7 @@ public class FP_Growth {
 		
 		long startTime = System.currentTimeMillis();
 		
-		FP_Tree fp = new FP_Tree(-1,null,0);
+		FP_Tree fp = new FP_Tree(-1,null,0); /** Creates a FP tree with just root */
 		
 		for(int i=0;i<pre.support.length;i++){
 			startNode.add(null);
@@ -61,7 +70,7 @@ public class FP_Growth {
 		int minsup = 153;
 		double minConfidence = 0.9;
 		
-		FP_Growth fpg = new FP_Growth();
+		FP_Growth fpg = new FP_Growth(); /** An Object of FP_Tree class.*/
 		TreeSet<Integer> set = new TreeSet<Integer>();
 		for(int i=1;i<pre.support.length;i++){
 			if(pre.support[i]>minsup){
@@ -78,9 +87,9 @@ public class FP_Growth {
 		System.out.println("\nThe Time elapsed to find all frequent Item Subsets: " + (supportStopTime-startTime)+" milliseconds\n");
 		
 		System.out.println("Rules Generated: ");
+		
 		confidentRuleGen(minConfidence);
-		
-		
+				
 		System.out.println(" ");
 		System.out.println("No of Rules: "+confidentRules.size());
 		System.out.println(" ");
@@ -91,6 +100,17 @@ public class FP_Growth {
 		
 	}
 	
+	/**
+	 * @param tree The main tree whose subtree(ending with a specified item) has to be generated
+	 * @param endWith The item with which every path in the subtree should end
+	 * @param minsup Minimum Support
+	 * @param support The integer array containing the support of all the elements
+	 * @param subSet Candidate frequent itemset which is appended to create a frequent itemset
+	 * @param startNode An array containing the ending node of all items.
+	 * This function recursively finds all the frequent itemsets ending with a particular item by creating a subtree,
+	 * then pruning it to create a conditional FP Tree.
+	 * It then adds the frequent itemset to the Hashmap itemWithSupport.
+	 */
 	public void generateItemsets(FP_Tree tree, int endWith, int minsup, int support[],TreeSet<Integer> subSet, ArrayList<FP_Tree> startNode){
 		TreeSet<Integer> set = new TreeSet<Integer>(subSet);
 		ArrayList<Integer> candidates = new ArrayList<Integer>();
@@ -125,8 +145,7 @@ public class FP_Growth {
 	
 	/**
 	 * @param minConf The Confidence threshold below which any rule would be pruned out for not having sufficient confidence
-	 * This function checks confidence of only those rules who have the element 'democrat' or 'republican' in them.
-	 * It passes such rules to the isConfRule() method
+	 * This function sends every possible candidate rule of all frequent itemsets to the function isConfRule()
 	 */
 	public static void confidentRuleGen(double minConf){
 		

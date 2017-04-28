@@ -3,11 +3,23 @@ package tree_fp;
 import java.io.*;
 import java.util.*;
 
+/**
+ * @author Sandeep, Poojitha, Snehal
+ * Class that converts the continuous data to discrete data
+ * Handles the missing values and 
+ * Sorts the trasaction based on their support count.
+ */
 public class PreProcessing {
+	
+	/** An array list of integer arrays that stores the given data */
 	public ArrayList<int []> data = new ArrayList<int[]>();
+	
+	/** An array list of integer arrays that stores the discrete data after pre processing */
 	public ArrayList<int []> expandedData = new ArrayList<int[]>();
-	//public ArrayList<int []> sortedExpandedData = new ArrayList<int[]>();
+	
+	/** An integer array that stores the Support of all items */
 	public int support[] = new int[41];
+	
 	public PreProcessing(String filename) {
 		try{
 			inputHandle(filename,data);
@@ -17,30 +29,17 @@ public class PreProcessing {
 
 		expand(data,expandedData);
 		support = calcSupport(expandedData);
-		/*for(int i=0;i<expandedData.size();i++){
-			for(int j=0;j<expandedData.get(i).length;j++){
-				System.out.print(expandedData.get(i)[j]+" ");
-			}
-			System.out.println(" ");
-					
-		}
-		System.out.println("Support Count: ");
-		for(int j=1;j<support.length;j++){
-			System.out.print(support[j] +" ");
-		}
-		System.out.println(" ");
-		System.out.println("After Sorting: ");*/
-		sort(expandedData,support);
-		/*for(int i=0;i<expandedData.size();i++){
-			for(int j=0;j<expandedData.get(i).length;j++){
-				System.out.print(expandedData.get(i)[j]+" ");
-			}
-			System.out.println(" ");
-					
-		}*/
-		
+				
 	}
 
+	/**
+	 * @param filename The file to be read
+	 * @param data The data structure which stores the data in the file
+	 * @throws IOException
+	 * This function reads the input file and stores them in a data structure
+	 * Converts continuous data tob discrete data
+	 * Handles missing values 
+	 */
 	public void inputHandle(String filename,ArrayList<int[]> data)throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(filename));
 		String line=null;
@@ -451,6 +450,11 @@ public class PreProcessing {
 		return row;
 	}
 
+	/**
+	 * @param toSort Tha transaction to be sorted
+	 * @param support Array containing support counts of all items
+	 * This function sorts a transaction based on their support counts.
+	 */
 	public void sort(ArrayList<int []> toSort, int []support)
 	{
 		

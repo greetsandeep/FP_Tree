@@ -2,9 +2,18 @@ package tree_fp;
 
 import java.util.HashMap;
 
+/**
+ * @author Sandeep, Snehal, Poojitha
+ * Class which stores all the attributes in a transaction.
+ */
 public class DataRef {
+	
+	/** A string array which stores the names of all attributes */
 	public String[] classes = new String[9];
+	
+	/** A global Hash map of integer and string array which stores all the different subclasses after discretizattion of the data. */
 	public static HashMap<Integer, String[]> subclasses = new HashMap<Integer,String[]>();
+	
 	DataRef() {
 		classes[0] = "Number of times pregnant";
 		classes[1] = "Plasma glucose concentration a 2 hours in an oral glucose tolerance test";
