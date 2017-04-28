@@ -67,7 +67,7 @@ public class FP_Growth {
 			fp.addTransaction(data.get(i), startNode);
 		}
 		
-		int minsup = 153;
+		int minsup = 115;
 		double minConfidence = 0.9;
 		
 		FP_Growth fpg = new FP_Growth(); /** An Object of FP_Tree class.*/
